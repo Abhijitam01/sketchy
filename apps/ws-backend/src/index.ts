@@ -1,3 +1,4 @@
+import { createServer } from "http"
 import {WebSocket, WebSocketServer} from "ws"
 import type { RawData } from "ws"
 import { checkUser } from "./checkUser";
@@ -7,8 +8,19 @@ import "dotenv/config"
 import { randomUUID } from "crypto"
 
 const logger = createLogger({ service: "ws-backend" })
-const port = Number(process.env.WS_PORT ?? 8080)
-const wss = new WebSocketServer({port})
+const port = Number(process.env.PORT ?? process.env.WS_PORT ?? 8080)
+const server = createServer((req, res) => {
+    if (req.url === "/health") {
+        res.writeHead(200, { "Content-Type": "application/json" })
+        res.end(JSON.stringify({ ok: true }))
+        return
+    }
+
+    res.writeHead(404, { "Content-Type": "application/json" })
+    res.end(JSON.stringify({ error: "Not found" }))
+})
+
+const wss = new WebSocketServer({ server })
 
 interface User {
     ws:  WebSocket,
@@ -86,8 +98,6 @@ const safeJsonParse = (data: RawData | string) => {
         return null
     }
 }
-
-logger.info("WebSocket server listening", { port, env: process.env.NODE_ENV ?? "development" })
 
 wss.on("connection", async function connection(ws, request){
     const url = request.url
@@ -381,6 +391,10 @@ wss.on("connection", async function connection(ws, request){
         }
 
     })
+})
+
+server.listen(port, () => {
+    logger.info("WebSocket server listening", { port, env: process.env.NODE_ENV ?? "development" })
 })
 
 process.on("unhandledRejection", (reason) => {

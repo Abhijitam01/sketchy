@@ -11,7 +11,7 @@ import { randomBytes, randomUUID } from "crypto"
 
 const app = express()
 const logger = createLogger({ service: "http-backend" })
-const port = Number(process.env.HTTP_PORT ?? 3001)
+const port = Number(process.env.PORT ?? process.env.HTTP_PORT ?? 3001)
 const jwtExpiresIn = process.env.JWT_EXPIRES_IN ?? "7d"
 const corsOrigins = (process.env.CORS_ORIGINS ?? "http://127.0.0.1:3000,http://localhost:3000")
     .split(",")
@@ -45,6 +45,10 @@ const isLegacyRoomSchemaError = (error: unknown): boolean => {
 }
 
 app.use(express.json())
+
+app.get("/health", (_req, res) => {
+    res.status(200).json({ ok: true })
+})
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) {
