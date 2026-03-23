@@ -17,6 +17,7 @@ import {
 import { Input } from "@repo/ui/input"
 import { Button } from "@repo/ui/button"
 import { useState } from "react"
+import { getPublicHttpUrl } from "@/lib/public-urls"
 import { safeStorageGet } from "@/lib/storage"
 
 export function CreateRoomForm() {
@@ -40,13 +41,8 @@ export function CreateRoomForm() {
       return
     }
 
-    if (!process.env.NEXT_PUBLIC_HTTP_URL) {
-      setError("Client config is missing NEXT_PUBLIC_HTTP_URL.")
-      return
-    }
-
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_HTTP_URL}/room`, {
+      const response = await fetch(`${getPublicHttpUrl()}/room`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

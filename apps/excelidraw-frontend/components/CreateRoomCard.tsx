@@ -19,6 +19,7 @@ import {
 import { Input } from "@repo/ui/input";
 import { Button } from "@repo/ui/button";
 import { Plus, Loader2, Sparkles } from "lucide-react";
+import { getPublicHttpUrl } from "@/lib/public-urls";
 import { safeStorageGet } from "@/lib/storage";
 
 export function CreateRoomCard() {
@@ -46,14 +47,8 @@ export function CreateRoomCard() {
       return;
     }
 
-    if (!process.env.NEXT_PUBLIC_HTTP_URL) {
-      setError("Client config is missing NEXT_PUBLIC_HTTP_URL.");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_HTTP_URL}/room`, {
+      const response = await fetch(`${getPublicHttpUrl()}/room`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

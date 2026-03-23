@@ -6,12 +6,14 @@ import brcypt from "bcryptjs"
 import { signUserJwt } from "@repo/common/jwt"
 import "dotenv/config"
 import cors from "cors"
-import { extractAuthToken, middleware, verifyAuthToken } from "./middleware";
+import { extractAuthToken, middleware, verifyAuthToken } from "./middleware"
+import { prismaErrorToHttpResponse } from "./prisma-http-error"
 import { randomBytes, randomUUID } from "crypto"
 
 const app = express()
 const logger = createLogger({ service: "http-backend" })
-const port = Number(process.env.PORT ?? process.env.HTTP_PORT ?? 3001)
+const preferredHttpPort = Number(process.env.PORT ?? process.env.HTTP_PORT ?? 3001)
+const MAX_DEV_PORT_TRIES = 15
 const jwtExpiresIn = process.env.JWT_EXPIRES_IN ?? "7d"
 const corsOrigins = (process.env.CORS_ORIGINS ?? "http://127.0.0.1:3000,http://localhost:3000")
     .split(",")
@@ -135,6 +137,11 @@ app.post("/signup", async (req, res)=> {
         })
     } catch (e) {
         logger.error("Signup failed", { requestId: req.requestId, error: e })
+        const mapped = prismaErrorToHttpResponse(e)
+        if (mapped) {
+            res.status(mapped.status).json(mapped.body)
+            return
+        }
         res.status(500).json({ error: "Internal Server Error" })
     }
 })
@@ -185,6 +192,11 @@ app.post("/signin", async (req,res)=> {
         })
     } catch (e) {
         logger.error("Signin failed", { requestId: req.requestId, error: e })
+        const mapped = prismaErrorToHttpResponse(e)
+        if (mapped) {
+            res.status(mapped.status).json(mapped.body)
+            return
+        }
         res.status(500).json({ error: "Internal Server Error" })
     }
 
@@ -231,6 +243,11 @@ app.post("/signin/demo", async (req, res) => {
         })
     } catch (e) {
         logger.error("Demo signin failed", { requestId: req.requestId, error: e })
+        const mapped = prismaErrorToHttpResponse(e)
+        if (mapped) {
+            res.status(mapped.status).json(mapped.body)
+            return
+        }
         res.status(500).json({ error: "Unable to sign in with demo account" })
     }
 })
@@ -468,9 +485,32 @@ app.get("/user", middleware , async (req, res)=>{
 
 
 
-app.listen(port, ()=>{
-    logger.info("HTTP server listening", { port, env: process.env.NODE_ENV ?? "development" })
-})
+const listenHttp = (port: number, attempt: number): void => {
+  const server = app.listen(port, () => {
+    logger.info("HTTP server listening", {
+      port,
+      env: process.env.NODE_ENV ?? "development",
+    })
+  })
+
+  server.on("error", (err: NodeJS.ErrnoException) => {
+    if (
+      err.code === "EADDRINUSE" &&
+      process.env.NODE_ENV !== "production" &&
+      attempt < MAX_DEV_PORT_TRIES
+    ) {
+      logger.warn("HTTP port in use, trying next", { busyPort: port, nextPort: port + 1 })
+      server.close(() => {
+        listenHttp(port + 1, attempt + 1)
+      })
+      return
+    }
+    logger.error("HTTP server failed to listen", err)
+    process.exit(1)
+  })
+}
+
+listenHttp(preferredHttpPort, 0)
 
 process.on("unhandledRejection", (reason) => {
     logger.error("Unhandled promise rejection", reason)

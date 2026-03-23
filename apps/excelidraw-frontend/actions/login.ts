@@ -1,5 +1,5 @@
 import { LoginSchema } from "@repo/common/types"
-
+import { getPublicHttpUrl } from "@/lib/public-urls"
 import { z } from "zod"
 
 interface LoginResponse {
@@ -7,11 +7,7 @@ interface LoginResponse {
 }
 
 export const login = async (values: z.infer<typeof LoginSchema>): Promise<LoginResponse> => {
-    if (!process.env.NEXT_PUBLIC_HTTP_URL) {
-      throw new Error("Client config missing NEXT_PUBLIC_HTTP_URL")
-    }
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HTTP_URL}/signin`, {
+    const res = await fetch(`${getPublicHttpUrl()}/signin`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -29,11 +25,7 @@ export const login = async (values: z.infer<typeof LoginSchema>): Promise<LoginR
 }
 
 export const demoLogin = async (): Promise<LoginResponse> => {
-    if (!process.env.NEXT_PUBLIC_HTTP_URL) {
-      throw new Error("Client config missing NEXT_PUBLIC_HTTP_URL")
-    }
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HTTP_URL}/signin/demo`, {
+    const res = await fetch(`${getPublicHttpUrl()}/signin/demo`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

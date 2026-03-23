@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { getPublicHttpUrl } from "@/lib/public-urls"
 import { safeStorageGet } from "@/lib/storage"
 
 interface Room {
@@ -18,7 +19,7 @@ export const useRoomByName = (roomName: string) => {
 
         const fetchRoom = async () => {
             try{
-                const response = await fetch(`${process.env.NEXT_PUBLIC_HTTP_URL}/room/${roomName}`, {
+                const response = await fetch(`${getPublicHttpUrl()}/room/${roomName}`, {
                     method: "GET",
                     headers: {
                         "authorization": token ? `Bearer ${token}` : ""

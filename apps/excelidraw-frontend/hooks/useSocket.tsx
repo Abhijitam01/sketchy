@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { getPublicWsUrl } from "@/lib/public-urls";
 import { safeStorageGet } from "@/lib/storage";
 
 export const useSocket = (roomId: string | null, inviteCode?: string | null) => {
@@ -14,12 +15,7 @@ export const useSocket = (roomId: string | null, inviteCode?: string | null) => 
       return;
     }
 
-    if (!process.env.NEXT_PUBLIC_WS_URL) {
-      console.error("NEXT_PUBLIC_WS_URL is not set");
-      return;
-    }
-
-    const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/?token=${token}`);
+    const ws = new WebSocket(`${getPublicWsUrl()}/?token=${token}`);
 
     ws.onopen = () => {
       setSocket(ws);

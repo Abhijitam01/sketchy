@@ -1,15 +1,16 @@
 "use client"
 
+import { getPublicHttpUrl } from "./public-urls"
 import { safeStorageGet, safeStorageRemove } from "./storage"
 
 export const hasValidSession = async (): Promise<boolean> => {
   const token = safeStorageGet("token")
-  if (!token || !process.env.NEXT_PUBLIC_HTTP_URL) {
+  if (!token) {
     return false
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_HTTP_URL}/user`, {
+    const response = await fetch(`${getPublicHttpUrl()}/user`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${token}`,

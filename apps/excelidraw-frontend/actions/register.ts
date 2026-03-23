@@ -1,12 +1,9 @@
 import { RegisterSchema } from "@repo/common/types"
-import {z} from "zod"
+import { getPublicHttpUrl } from "@/lib/public-urls"
+import { z } from "zod"
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
-    if (!process.env.NEXT_PUBLIC_HTTP_URL) {
-      throw new Error("Client config missing NEXT_PUBLIC_HTTP_URL")
-    }
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HTTP_URL}/signup`, {
+    const res = await fetch(`${getPublicHttpUrl()}/signup`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

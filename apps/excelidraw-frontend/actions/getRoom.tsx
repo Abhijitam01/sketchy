@@ -1,4 +1,5 @@
 import type { RoomData } from "@/types/room"
+import { getPublicHttpUrl } from "@/lib/public-urls"
 
 type GetRoomResponse = {
   room?: RoomData
@@ -12,7 +13,7 @@ export const getRoom = async (roomName: string, invite?: string): Promise<RoomDa
     }
 
     const query = params.toString()
-    const url = `${process.env.NEXT_PUBLIC_HTTP_URL}/room/${roomName}${query ? `?${query}` : ""}`
+    const url = `${getPublicHttpUrl()}/room/${roomName}${query ? `?${query}` : ""}`
     const res = await fetch(url, {
         method: "GET"
     })

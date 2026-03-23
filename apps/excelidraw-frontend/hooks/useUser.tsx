@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import { getPublicHttpUrl } from "@/lib/public-urls"
 import { safeStorageGet, safeStorageRemove } from "@/lib/storage"
 
 export interface RoomSummary {
@@ -44,15 +45,8 @@ export const useUser = (): UseUserResponse => {
       return
     }
 
-    if (!process.env.NEXT_PUBLIC_HTTP_URL) {
-      setUser(null)
-      setError("Client config is missing NEXT_PUBLIC_HTTP_URL")
-      setIsLoading(false)
-      return
-    }
-
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_HTTP_URL}/user`, {
+      const res = await fetch(`${getPublicHttpUrl()}/user`, {
         method: "GET",
         headers: {
           authorization: `Bearer ${token}`,
