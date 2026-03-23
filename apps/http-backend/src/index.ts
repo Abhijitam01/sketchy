@@ -3,8 +3,8 @@ import express from "express"
 import {RegisterSchema, LoginSchema, CreateRoomSchema} from "@repo/common/types"
 import { createLogger } from "@repo/common/logger"
 import brcypt from "bcryptjs"
-import jwt from "jsonwebtoken"
-import 'dotenv/config'
+import { signUserJwt } from "@repo/common/jwt"
+import "dotenv/config"
 import cors from "cors"
 import { extractAuthToken, middleware, verifyAuthToken } from "./middleware";
 import { randomBytes, randomUUID } from "crypto"
@@ -174,10 +174,10 @@ app.post("/signin", async (req,res)=> {
             return;
         }
 
-        const token = jwt.sign(
-            {userId : user.id},
-            process.env.JWT_SECRET!,
-            { expiresIn: jwtExpiresIn }
+        const token = await signUserJwt(
+          { userId: user.id },
+          process.env.JWT_SECRET!,
+          jwtExpiresIn
         )
 
         res.json({
@@ -216,10 +216,10 @@ app.post("/signin/demo", async (req, res) => {
             })
         }
 
-        const token = jwt.sign(
-            { userId: user.id },
-            process.env.JWT_SECRET!,
-            { expiresIn: jwtExpiresIn }
+        const token = await signUserJwt(
+          { userId: user.id },
+          process.env.JWT_SECRET!,
+          jwtExpiresIn
         )
         res.json({
             token,
@@ -397,7 +397,7 @@ app.get("/room/:roomName", async (req, res)=> {
 
         const authHeader = req.headers["authorization"]
         const token = extractAuthToken(authHeader)
-        const userId = verifyAuthToken(token)
+        const userId = await verifyAuthToken(token)
         const invite = typeof req.query.invite === "string" ? req.query.invite : undefined
 
         if (room.isPrivate) {

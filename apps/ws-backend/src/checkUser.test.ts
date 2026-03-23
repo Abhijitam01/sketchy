@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest"
-import jwt from "jsonwebtoken"
+import { signUserJwt } from "@repo/common/jwt"
 import { checkUser } from "./checkUser"
 
 const ORIGINAL_SECRET = process.env.JWT_SECRET
@@ -9,30 +9,30 @@ afterEach(() => {
 })
 
 describe("checkUser", () => {
-  it("returns null when JWT_SECRET is missing", () => {
+  it("returns null when JWT_SECRET is missing", async () => {
     delete process.env.JWT_SECRET
-    const token = jwt.sign({ userId: "abc" }, "fallback")
+    const token = await signUserJwt({ userId: "abc" }, "fallback", "1h")
 
-    expect(checkUser(token)).toBeNull()
+    expect(await checkUser(token)).toBeNull()
   })
 
-  it("returns userId for valid token", () => {
+  it("returns userId for valid token", async () => {
     process.env.JWT_SECRET = "test-secret"
-    const token = jwt.sign({ userId: "user-123" }, process.env.JWT_SECRET)
+    const token = await signUserJwt({ userId: "user-123" }, process.env.JWT_SECRET, "1h")
 
-    expect(checkUser(token)).toBe("user-123")
+    expect(await checkUser(token)).toBe("user-123")
   })
 
-  it("returns null for invalid token", () => {
+  it("returns null for invalid token", async () => {
     process.env.JWT_SECRET = "test-secret"
 
-    expect(checkUser("not-a-valid-jwt")).toBeNull()
+    expect(await checkUser("not-a-valid-jwt")).toBeNull()
   })
 
-  it("returns null when token was signed with different secret", () => {
+  it("returns null when token was signed with different secret", async () => {
     process.env.JWT_SECRET = "secret-a"
-    const token = jwt.sign({ userId: "user-123" }, "secret-b")
+    const token = await signUserJwt({ userId: "user-123" }, "secret-b", "1h")
 
-    expect(checkUser(token)).toBeNull()
+    expect(await checkUser(token)).toBeNull()
   })
 })

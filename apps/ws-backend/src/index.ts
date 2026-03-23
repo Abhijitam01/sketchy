@@ -109,7 +109,7 @@ wss.on("connection", async function connection(ws, request){
     const queryParams = new URLSearchParams(url.split("?")[1])
     const connectionId = queryParams.get("requestId") || randomUUID()
     const token = queryParams.get("token") || ""
-    const userId = checkUser(token)
+    const userId = await checkUser(token)
 
     if (userId === null){
         logger.warn("Rejected websocket connection due to invalid token", { connectionId })

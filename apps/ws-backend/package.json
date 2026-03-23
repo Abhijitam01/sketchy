@@ -10,7 +10,6 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.7",
     "@types/ws": "^8.5.13",
     "vitest": "^2.1.8"
@@ -23,7 +22,6 @@
     "@repo/common": "workspace:*",
     "@repo/db": "workspace:*",
     "dotenv": "^16.4.7",
-    "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.0"
   }
 }

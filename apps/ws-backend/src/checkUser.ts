@@ -1,20 +1,10 @@
-import jwt from "jsonwebtoken"
+import { verifyUserJwt } from "@repo/common/jwt"
 import "dotenv/config"
 
-export const  checkUser = (token: string) : string | null => {
-
-    if (!process.env.JWT_SECRET) {
-        return null
-    }
-
-    try {
-        const decoded = jwt.verify(token , process.env.JWT_SECRET)
-        if (typeof decoded === "object" && decoded !== null && typeof decoded.userId === "string") {
-            return decoded.userId
-        }
-    } catch (e) {
-        return null
-    }
-
+export const checkUser = async (token: string): Promise<string | null> => {
+  if (!process.env.JWT_SECRET) {
     return null
+  }
+
+  return verifyUserJwt(token, process.env.JWT_SECRET)
 }
