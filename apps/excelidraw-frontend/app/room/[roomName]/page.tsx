@@ -15,11 +15,6 @@ const page = async ({params, searchParams}: PageProps) => {
     const resolvedSearchParams = await searchParams
     try {
         const room = await getRoom(roomName, resolvedSearchParams?.invite)
-
-        if(!room){
-            return <p>The room doesn&apos;t exist</p>
-        }
-
         const inviteToken = resolvedSearchParams?.invite || room.inviteCode || null
         return <RoomCanvas roomId={String(room.id)} room={room} inviteCode={inviteToken} />
     } catch (error) {

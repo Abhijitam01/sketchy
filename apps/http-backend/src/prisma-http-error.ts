@@ -1,6 +1,3 @@
-/**
- * Maps Prisma errors to HTTP responses without importing @prisma/client (not a direct dependency).
- */
 export function prismaErrorToHttpResponse(
   error: unknown
 ): { status: number; body: { error: string } } | null {

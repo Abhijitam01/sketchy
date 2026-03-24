@@ -5,7 +5,6 @@
     "./types": "./src/types.ts",
     "./logger": "./src/logger.ts",
     "./jwt": "./src/jwt.ts",
-    "./root-env": "./src/root-env.ts",
     "./env-bootstrap": "./src/env-bootstrap.ts"
   },
   "main": "index.js",

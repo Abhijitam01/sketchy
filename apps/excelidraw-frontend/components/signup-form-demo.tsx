@@ -2,7 +2,7 @@
 
 import React from "react"
 import Link from "next/link"
-import { Github, Chrome, Gem } from "lucide-react"
+import { Github } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { login, demoLogin } from "@/actions/login"
@@ -169,24 +169,6 @@ export default function SignupFormDemo({ mode = "signup" }: { mode?: AuthMode })
           >
             <Github className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
             <span className="text-sm text-neutral-700 dark:text-neutral-300">{demoLoading ? "Loading demo..." : "Use Demo Login"}</span>
-            <BottomGradient />
-          </button>
-          <button
-            className="group/btn shadow-input relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_#262626]"
-            type="button"
-            onClick={() => setSubmitError("Google sign-in is not configured yet")}
-          >
-            <Chrome className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-sm text-neutral-700 dark:text-neutral-300">Google</span>
-            <BottomGradient />
-          </button>
-          <button
-            className="group/btn shadow-input relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_#262626]"
-            type="button"
-            onClick={() => setSubmitError("OnlyFans sign-in is not configured yet")}
-          >
-            <Gem className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-sm text-neutral-700 dark:text-neutral-300">OnlyFans</span>
             <BottomGradient />
           </button>
         </div>

@@ -23,17 +23,9 @@ export const RoomCanvas = ({
 
     const socket = useSocket(roomId, inviteCode)
 
-    if(!socket){
-      return  <div>
-            Connecting to WebSocket...
-        </div>
+    if (!socket) {
+        return <div>Connecting to WebSocket...</div>
     }
 
-    return(
-
-            <Canvas roomId={roomId} socket={socket} room={room} inviteCode={inviteCode} />
-
-    )
-
-    
+    return <Canvas roomId={roomId} socket={socket} room={room} inviteCode={inviteCode} />
 }

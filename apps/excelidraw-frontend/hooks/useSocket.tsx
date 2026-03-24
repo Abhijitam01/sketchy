@@ -7,7 +7,7 @@ export const useSocket = (roomId: string | null, inviteCode?: string | null) => 
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    if (!roomId) return; // Do nothing if roomId is null
+    if (!roomId) return;
 
     const token = safeStorageGet("token");
     if (!token) {
@@ -43,7 +43,7 @@ export const useSocket = (roomId: string | null, inviteCode?: string | null) => 
         ws.close();
       }
     };
-  }, [roomId, inviteCode]); // Dependency array includes roomId
+  }, [roomId, inviteCode]);
 
   return socket;
 };

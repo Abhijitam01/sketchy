@@ -221,8 +221,7 @@ export class Game {
                     if (parsed?.shape) {
                         this.existingShape.push(parsed.shape)
                     }
-                } catch (e) {
-                    // ignore bad shape payloads
+                } catch {
                 }
             })
             if (this.existingShape.length === 0) {
