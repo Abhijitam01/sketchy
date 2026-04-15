@@ -2,13 +2,26 @@
   "name": "@repo/common",
   "version": "1.0.0",
   "exports": {
-    "./types": "./src/types.ts",
-    "./logger": "./src/logger.ts",
-    "./jwt": "./src/jwt.ts",
-    "./env-bootstrap": "./src/env-bootstrap.ts"
+    "./types": {
+      "types": "./src/types.ts",
+      "default": "./dist/types.js"
+    },
+    "./logger": {
+      "types": "./src/logger.ts",
+      "default": "./dist/logger.js"
+    },
+    "./jwt": {
+      "types": "./src/jwt.ts",
+      "default": "./dist/jwt.js"
+    },
+    "./env-bootstrap": {
+      "types": "./src/env-bootstrap.ts",
+      "default": "./dist/env-bootstrap.js"
+    }
   },
   "main": "index.js",
   "scripts": {
+    "build": "tsc --project tsconfig.build.json",
     "test": "vitest run --no-cache"
   },
   "devDependencies": {
