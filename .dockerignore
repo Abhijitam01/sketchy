@@ -4,4 +4,3 @@ dist
 .next
 .git
 .env
-pnpm-lock.yaml
