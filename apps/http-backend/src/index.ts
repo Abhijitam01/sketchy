@@ -127,7 +127,6 @@ app.post("/signup", async (req, res)=> {
             }
         })
 
-
         res.status(201).json({
             user: {
                 id: user.id,
@@ -273,10 +272,9 @@ app.post("/room", middleware , async (req, res)=> {
             return;
         }
 
-
         const { roomName, isPrivate } = validRoom.data
 
-        const inviteCode = isPrivate ? randomBytes(4).toString("hex") : null
+        const inviteCode = isPrivate ? randomBytes(16).toString("hex") : null
 
         let existingRoom: { id: number } | null = null
         try {
@@ -304,8 +302,6 @@ app.post("/room", middleware , async (req, res)=> {
             })
             return;
         }
-
-
 
         let room: {
             id: number
@@ -481,9 +477,6 @@ app.get("/user", middleware , async (req, res)=>{
         res.status(500).json({ error: "Internal Server Error" })
     }
 })
-
-
-
 
 const listenHttp = (port: number, attempt: number): void => {
   const server = app.listen(port, () => {

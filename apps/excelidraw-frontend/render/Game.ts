@@ -801,7 +801,6 @@ export class Game {
         this.startX = snapped.x
         this.startY = snapped.y
 
-        // Handle selection and dragging with select tool
         if (this.activeTool === "select") {
             if (this.selectedShapeIndex !== null) {
                 const selectedShape = this.existingShape[this.selectedShapeIndex]
@@ -827,7 +826,6 @@ export class Game {
                 this.setSelectedShapeIndex(hitIndex)
                 this.isDragging = true
                 
-                // Calculate offset for smooth dragging with type guards
                 if (shape.type === "rect" && 'x' in shape && 'y' in shape) {
                     this.dragOffsetX = x - shape.x
                     this.dragOffsetY = y - shape.y
@@ -955,7 +953,6 @@ export class Game {
                 return
             }
 
-            // Handle dragging selected shape
             if (this.isDragging && this.selectedShapeIndex !== null) {
                 const shape = this.existingShape[this.selectedShapeIndex]
                 if (!shape) return
@@ -963,7 +960,6 @@ export class Game {
                 const newX = x - this.dragOffsetX
                 const newY = y - this.dragOffsetY
 
-                // Update shape position based on type
                 if (shape.type === "rect" || shape.type === "diamond" || shape.type === "triangle") {
                     shape.x = newX
                     shape.y = newY
@@ -1120,7 +1116,6 @@ export class Game {
     }
 
 
-    // Collision Detection => Chat GPT
     isPointInShape(x: number, y: number, shape: Shape): boolean {
         const tolerance = 5; 
     
@@ -1927,12 +1922,10 @@ export class Game {
             return
         }
 
-        // Handle drag completion
         if (this.isDragging && this.selectedShapeIndex !== null) {
             this.isDragging = false
             this.updateCursor()
             this.saveToHistory()
-            // Sync dragged shape position with server
             const shape = this.existingShape[this.selectedShapeIndex]
             if (shape) {
                 this.socket.send(JSON.stringify({
@@ -2211,7 +2204,6 @@ export class Game {
 
         const mouseX = e.clientX - this.canvas.offsetLeft;
         const mouseY = e.clientY - this.canvas.offsetTop;
-        // Position of cursor on canvas
         const canvasMouseX = (mouseX - this.panX) / this.scale;
         const canvasMouseY = (mouseY - this.panY) / this.scale;
 
@@ -2464,8 +2456,7 @@ export class Game {
                 shapes: this.existingShape,
                 updatedAt: now
             }))
-        } catch (e) {
-            // ignore storage failures
+        } catch {
         }
     }
 
