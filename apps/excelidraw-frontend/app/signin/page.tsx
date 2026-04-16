@@ -5,10 +5,10 @@ import Link from "next/link"
 
 const SignInPage = () => {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#12151e] px-4">
+    <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <Link href="/" className="text-lg font-semibold text-white">
+          <Link href="/" className="text-lg font-semibold text-foreground">
             Sketchy
           </Link>
         </div>

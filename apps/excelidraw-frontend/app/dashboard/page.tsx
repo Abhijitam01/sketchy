@@ -10,10 +10,10 @@ const Dashboard = () => {
       {(username, rooms) => (
         <div className="space-y-8">
           <div>
-            <h1 className="text-2xl font-semibold text-white">
+            <h1 className="text-2xl font-semibold text-foreground">
               {username ? `Hello, ${username}` : "Dashboard"}
             </h1>
-            <p className="mt-1 text-sm text-white/40">
+            <p className="mt-1 text-sm text-muted-foreground">
               Your rooms and active sessions.
             </p>
           </div>
@@ -23,8 +23,8 @@ const Dashboard = () => {
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-white/60">Recent rooms</p>
-                <span className="text-xs text-white/25">{rooms.length} total</span>
+                <p className="text-sm font-medium text-muted-foreground">Recent rooms</p>
+                <span className="text-xs text-muted-foreground/55">{rooms.length} total</span>
               </div>
               <RoomList rooms={rooms} />
             </div>

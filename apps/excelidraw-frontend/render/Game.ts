@@ -180,7 +180,8 @@ export class Game {
     private  mermaidImageCache: Map<string, HTMLImageElement> = new Map()
     private  isBoxSelecting: boolean = false
     private  selectionBox: { startX: number; startY: number; endX: number; endY: number } | null = null
-    
+    private  broadcastChannel: BroadcastChannel | null = null
+
     constructor(
         canvas: HTMLCanvasElement , 
         roomId: string , 
@@ -207,6 +208,9 @@ export class Game {
         this.onRequestTextInputCallback = onRequestTextInputCallback;
         this.onSelectionChangeCallback = onSelectionChangeCallback;
         this.room = room
+        if (typeof BroadcastChannel !== "undefined") {
+            this.broadcastChannel = new BroadcastChannel(`drawr:room:${roomId}`)
+        }
         this.init()
         this.initHandler()
         this.initMouseHandler()
@@ -245,58 +249,65 @@ export class Game {
         }
     }
 
+    private handleIncomingMessage(data: { type: string; data?: string; users?: PresenceUser[]; shapes?: Shape[] }) {
+        if (data.type === "draw") {
+            const parsedShape = JSON.parse(data.data!)
+            this.existingShape.push(parsedShape.shape)
+            this.clearCanvas()
+        }
+        else if (data.type === "erase") {
+            const parsedShape = JSON.parse(data.data!)
+            this.existingShape = this.existingShape.filter(
+                (shape) => JSON.stringify(shape) !== JSON.stringify(parsedShape.shape)
+            )
+            this.setSelectedShapeIndex(null)
+            this.clearCanvas()
+        }
+        else if (data.type === "reset") {
+            this.existingShape = []
+            this.setSelectedShapeIndex(null)
+            this.clearCanvas()
+        }
+        else if (data.type === "bulk_draw") {
+            const payload = typeof data.data === "string" ? JSON.parse(data.data) : data
+            const shapes = Array.isArray(payload?.shapes) ? payload.shapes : []
+            if (shapes.length) {
+                this.existingShape = [...this.existingShape, ...shapes]
+                this.clearCanvas()
+            }
+        }
+        else if (data.type === "cursor") {
+            const payload = typeof data.data === "string" ? JSON.parse(data.data) : data
+            this.updateRemoteCursor(payload)
+            this.startCursorLoop()
+        }
+        else if (data.type === "presence" && Array.isArray(data.users)) {
+            this.onPresenceUpdateCallback?.(data.users)
+        }
+        else if (data.type === "update") {
+            const payload = typeof data.data === "string" ? JSON.parse(data.data) : data
+            if (
+                payload &&
+                typeof payload.index === "number" &&
+                payload.shape &&
+                payload.index >= 0 &&
+                payload.index < this.existingShape.length
+            ) {
+                this.existingShape[payload.index] = payload.shape
+                this.clearCanvas()
+            }
+        }
+    }
+
     initHandler(){
-        this.socket.onmessage = (event) =>{
-            const data = JSON.parse(event.data)
+        this.socket.onmessage = (event) => {
+            this.handleIncomingMessage(JSON.parse(event.data))
+        }
 
-            if(data.type === "draw"){
-                const parsedShape = JSON.parse(data.data)
-                this.existingShape.push(parsedShape.shape)
-                this.clearCanvas()
+        if (this.broadcastChannel) {
+            this.broadcastChannel.onmessage = (event: MessageEvent) => {
+                this.handleIncomingMessage(event.data)
             }
-            else if(data.type === "erase"){
-                const parsedShape = JSON.parse(data.data)
-                this.existingShape = this.existingShape.filter(
-                    (shape) => JSON.stringify(shape) !== JSON.stringify(parsedShape.shape)
-                );
-              this.setSelectedShapeIndex(null)
-              this.clearCanvas()
-            }
-            else if(data.type === "reset"){
-                this.existingShape = []
-                this.setSelectedShapeIndex(null)
-                this.clearCanvas()
-            }
-            else if(data.type === "bulk_draw"){
-                const payload = JSON.parse(data.data)
-                const shapes = Array.isArray(payload?.shapes) ? payload.shapes : []
-                if (shapes.length) {
-                    this.existingShape = [...this.existingShape, ...shapes]
-                    this.clearCanvas()
-                }
-            }
-            else if(data.type === "cursor"){
-                const payload = JSON.parse(data.data)
-                this.updateRemoteCursor(payload)
-                this.startCursorLoop()
-            }
-            else if (data.type === "presence" && Array.isArray(data.users)) {
-                this.onPresenceUpdateCallback?.(data.users)
-            }
-            else if (data.type === "update") {
-                const payload = JSON.parse(data.data)
-                if (
-                    payload &&
-                    typeof payload.index === "number" &&
-                    payload.shape &&
-                    payload.index >= 0 &&
-                    payload.index < this.existingShape.length
-                ) {
-                    this.existingShape[payload.index] = payload.shape
-                    this.clearCanvas()
-                }
-            }
-
         }
     }
 
@@ -369,11 +380,13 @@ export class Game {
         shape.height = Math.max(20, height)
         this.saveToHistory()
         this.clearCanvas()
-        this.socket.send(JSON.stringify({
+        const updateSelectedPayload = {
             type: "update",
             data: JSON.stringify({ shape, index: this.selectedShapeIndex }),
             roomId: this.roomId,
-        }))
+        }
+        this.socket.send(JSON.stringify(updateSelectedPayload))
+        this.broadcastChannel?.postMessage(updateSelectedPayload)
         this.notifySelectionChange()
     }
 
@@ -430,11 +443,13 @@ export class Game {
         this.existingShape.push(shape)
         this.saveToHistory()
         this.clearCanvas()
-        this.socket.send(JSON.stringify({
+        const drawTextPayload = {
             type: "draw",
             data: JSON.stringify({ shape }),
             roomId: this.roomId,
-        }))
+        }
+        this.socket.send(JSON.stringify(drawTextPayload))
+        this.broadcastChannel?.postMessage(drawTextPayload)
     }
 
     addMermaidShape(x: number, y: number, width: number, height: number, source: string, svg: string, opacity: number = 1) {
@@ -453,11 +468,13 @@ export class Game {
         this.existingShape.push(shape)
         this.saveToHistory()
         this.clearCanvas()
-        this.socket.send(JSON.stringify({
+        const drawMermaidPayload = {
             type: "draw",
             data: JSON.stringify({ shape }),
             roomId: this.roomId,
-        }))
+        }
+        this.socket.send(JSON.stringify(drawMermaidPayload))
+        this.broadcastChannel?.postMessage(drawMermaidPayload)
     }
 
     addMermaidEditableDiagram(definition: string, opacity: number = 1) {
@@ -598,11 +615,13 @@ export class Game {
         this.saveToHistory()
         this.setSelectedShapeIndex(this.existingShape.length - 1)
         this.clearCanvas()
-        this.socket.send(JSON.stringify({
+        const bulkDrawPayload = {
             type: "bulk_draw",
             roomId: this.roomId,
             shapes,
-        }))
+        }
+        this.socket.send(JSON.stringify(bulkDrawPayload))
+        this.broadcastChannel?.postMessage(bulkDrawPayload)
     }
 
     private parseMermaidDefinition(definition: string) {
@@ -1872,13 +1891,13 @@ export class Game {
             this.existingShape.splice(shapeIndex, 1);
             this.clearCanvas(); 
             
-            this.socket.send(JSON.stringify({
+            const erasePayload = {
                 type: "erase",
-                data: JSON.stringify({
-                    shape: erasedShape
-                }),
-                roomId : this.roomId 
-            }))
+                data: JSON.stringify({ shape: erasedShape }),
+                roomId: this.roomId,
+            }
+            this.socket.send(JSON.stringify(erasePayload))
+            this.broadcastChannel?.postMessage(erasePayload)
             
         }
 
@@ -1924,11 +1943,13 @@ export class Game {
             this.saveToHistory()
             const shape = this.existingShape[this.selectedShapeIndex]
             if (shape) {
-                this.socket.send(JSON.stringify({
+                const resizePayload = {
                     type: "update",
                     data: JSON.stringify({ shape, index: this.selectedShapeIndex }),
-                    roomId: this.roomId
-                }))
+                    roomId: this.roomId,
+                }
+                this.socket.send(JSON.stringify(resizePayload))
+                this.broadcastChannel?.postMessage(resizePayload)
             }
             this.updateCursor()
             this.clearCanvas()
@@ -1941,11 +1962,13 @@ export class Game {
             this.saveToHistory()
             const shape = this.existingShape[this.selectedShapeIndex]
             if (shape) {
-                this.socket.send(JSON.stringify({
+                const dragPayload = {
                     type: "update",
                     data: JSON.stringify({ shape, index: this.selectedShapeIndex }),
-                    roomId: this.roomId
-                }))
+                    roomId: this.roomId,
+                }
+                this.socket.send(JSON.stringify(dragPayload))
+                this.broadcastChannel?.postMessage(dragPayload)
             }
             return
         }
@@ -2077,13 +2100,13 @@ export class Game {
         this.updateCursor()
         this.saveToHistory()
 
-        this.socket.send(JSON.stringify({
+        const drawPayload = {
             type: "draw",
-            data: JSON.stringify({
-                shape
-            }),
-            roomId: this.roomId
-        }))
+            data: JSON.stringify({ shape }),
+            roomId: this.roomId,
+        }
+        this.socket.send(JSON.stringify(drawPayload))
+        this.broadcastChannel?.postMessage(drawPayload)
     }
 
 
@@ -2274,10 +2297,9 @@ export class Game {
         this.clearCanvas()
         this.saveToHistory()
         this.persistSnapshot()
-        this.socket.send(JSON.stringify({
-            type: "reset",
-            roomId: this.roomId
-        }))
+        const resetPayload = { type: "reset", roomId: this.roomId }
+        this.socket.send(JSON.stringify(resetPayload))
+        this.broadcastChannel?.postMessage(resetPayload)
     }
 
     async importJSON(file: File) {
@@ -2298,15 +2320,13 @@ export class Game {
         this.saveToHistory()
         this.persistSnapshot()
 
-        this.socket.send(JSON.stringify({
-            type: "reset",
-            roomId: this.roomId
-        }))
-        this.socket.send(JSON.stringify({
-            type: "bulk_draw",
-            roomId: this.roomId,
-            shapes: parsed.shapes
-        }))
+        const importResetPayload = { type: "reset", roomId: this.roomId }
+        this.socket.send(JSON.stringify(importResetPayload))
+        this.broadcastChannel?.postMessage(importResetPayload)
+
+        const importBulkPayload = { type: "bulk_draw", roomId: this.roomId, shapes: parsed.shapes }
+        this.socket.send(JSON.stringify(importBulkPayload))
+        this.broadcastChannel?.postMessage(importBulkPayload)
     }
 
     private isImportPayload(value: unknown): value is { shapes: Shape[] } {
@@ -2429,6 +2449,8 @@ export class Game {
             cancelAnimationFrame(this.cursorRafId)
             this.cursorRafId = null
         }
+        this.broadcastChannel?.close()
+        this.broadcastChannel = null
     }
 
 

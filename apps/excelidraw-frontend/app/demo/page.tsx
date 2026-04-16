@@ -12,11 +12,11 @@ export default async function DemoPage() {
     redirect(`/room/${roomName}`)
   } catch {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0f1115] px-6 text-white">
-        <section className="w-full max-w-xl rounded-2xl border border-white/10 bg-white/5 p-8">
+      <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
+        <section className="w-full max-w-xl rounded-2xl border border-border bg-card p-8 shadow-sm dark:shadow-none">
           <h1 className="text-2xl font-semibold tracking-tight">Live demo is currently unavailable</h1>
-          <p className="mt-3 text-sm text-white/70">
-            Demo room <code className="rounded bg-black/30 px-1 py-0.5">{DEMO_ROOM_NAME}</code> is not available right now.
+          <p className="mt-3 text-sm text-muted-foreground">
+            Demo room <code className="rounded bg-secondary px-1 py-0.5 text-foreground/80">{DEMO_ROOM_NAME}</code> is not available right now.
             You can still create your own room in a few clicks.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">

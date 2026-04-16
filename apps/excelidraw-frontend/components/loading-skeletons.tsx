@@ -2,10 +2,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function LandingPageSkeleton() {
   return (
-    <main className="min-h-screen bg-[#0f1115] px-6 py-8 text-white sm:px-8 lg:px-10 dark:bg-[#0f1115] dark:text-white">
+    <main className="min-h-screen bg-background px-6 py-8 text-foreground sm:px-8 lg:px-10">
       <div className="mx-auto max-w-6xl space-y-8">
         <Skeleton className="h-14 w-full rounded-2xl" />
-        <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8 sm:p-12">
+        <div className="rounded-3xl border border-border bg-secondary/30 p-8 sm:p-12">
           <Skeleton className="h-6 w-40" />
           <Skeleton className="mt-5 h-12 w-2/3" />
           <Skeleton className="mt-4 h-5 w-1/2" />
@@ -26,9 +26,9 @@ export function LandingPageSkeleton() {
 
 export function AuthPageSkeleton() {
   return (
-    <main className="min-h-screen bg-[#0f1115] text-white dark:bg-[#0f1115] dark:text-white">
+    <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex w-full max-w-6xl flex-col px-6 pb-14 pt-6 sm:px-8 lg:px-10">
-        <section className="relative mt-6 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-8 sm:p-12">
+        <section className="relative mt-6 overflow-hidden rounded-3xl border border-border bg-card p-8 sm:p-12">
           <div className="grid min-h-[72vh] items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="space-y-5">
               <Skeleton className="h-4 w-40" />
@@ -36,7 +36,7 @@ export function AuthPageSkeleton() {
               <Skeleton className="h-5 w-full max-w-lg" />
               <Skeleton className="h-5 w-2/3 max-w-lg" />
             </div>
-            <div className="mx-auto w-full max-w-md rounded-2xl border border-white/10 bg-black/40 p-6">
+            <div className="mx-auto w-full max-w-md rounded-2xl border border-border bg-secondary/40 p-6">
               <Skeleton className="h-8 w-40" />
               <Skeleton className="mt-2 h-4 w-56" />
               <Skeleton className="mt-6 h-10 w-full" />
@@ -54,7 +54,7 @@ export function AuthPageSkeleton() {
 export function DashboardShellSkeleton() {
   return (
     <div className="min-h-screen bg-background">
-      <aside className="fixed left-0 top-0 h-screen w-64 border-r border-white/10 bg-[#090b12] p-4 dark:bg-[#090b12]">
+      <aside className="fixed left-0 top-0 h-screen w-64 border-r border-border bg-card p-4">
         <Skeleton className="h-8 w-28" />
         <Skeleton className="mt-2 h-4 w-36" />
         <div className="mt-8 space-y-2">
@@ -80,7 +80,7 @@ export function DashboardShellSkeleton() {
 export function CreateRoomShellSkeleton() {
   return (
     <div className="min-h-screen bg-background">
-      <aside className="fixed left-0 top-0 h-screen w-64 border-r border-white/10 bg-[#090b12] p-4 dark:bg-[#090b12]">
+      <aside className="fixed left-0 top-0 h-screen w-64 border-r border-border bg-card p-4">
         <Skeleton className="h-8 w-28" />
         <Skeleton className="mt-2 h-4 w-36" />
       </aside>
@@ -100,7 +100,7 @@ export function CreateRoomShellSkeleton() {
 
 export function RoomCanvasSkeleton() {
   return (
-    <div className="relative h-screen w-full bg-[#111317] dark:bg-[#111317]">
+    <div className="relative h-screen w-full bg-[#111317]">
       <div className="fixed left-1/2 top-4 z-20 -translate-x-1/2">
         <Skeleton className="h-12 w-[46rem] rounded-xl" />
       </div>
@@ -123,8 +123,8 @@ export function RoomCanvasSkeleton() {
 
 export function DemoPageSkeleton() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#0f1115] px-6 text-white dark:bg-[#0f1115] dark:text-white">
-      <section className="w-full max-w-xl rounded-2xl border border-white/10 bg-white/5 p-8">
+    <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
+      <section className="w-full max-w-xl rounded-2xl border border-border bg-card p-8">
         <Skeleton className="h-8 w-80" />
         <Skeleton className="mt-3 h-4 w-full" />
         <Skeleton className="mt-2 h-4 w-5/6" />

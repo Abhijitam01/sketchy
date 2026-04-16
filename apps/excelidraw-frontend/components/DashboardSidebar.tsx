@@ -25,9 +25,9 @@ export function DashboardSidebar({ username }: DashboardSidebarProps) {
   ];
 
   return (
-    <div className="fixed left-0 top-0 z-20 flex h-screen w-60 flex-col border-r border-white/[0.06] bg-[#1e1e2e]">
+    <div className="fixed left-0 top-0 z-20 flex h-screen w-60 flex-col border-r border-border bg-card">
       <div className="px-5 py-5">
-        <Link href="/" className="text-base font-semibold text-white">
+        <Link href="/" className="text-base font-semibold text-foreground">
           Sketchy
         </Link>
       </div>
@@ -42,8 +42,8 @@ export function DashboardSidebar({ username }: DashboardSidebarProps) {
               className={cn(
                 "mb-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors",
                 isActive
-                  ? "bg-indigo-600/20 text-indigo-300"
-                  : "text-white/50 hover:bg-white/[0.05] hover:text-white/80"
+                  ? "bg-indigo-600/15 text-indigo-600 dark:bg-indigo-600/20 dark:text-indigo-300"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4" />
@@ -53,12 +53,12 @@ export function DashboardSidebar({ username }: DashboardSidebarProps) {
         })}
       </nav>
 
-      <div className="border-t border-white/[0.06] px-3 py-4">
-        <p className="mb-3 px-3 text-[11px] text-white/30 truncate">{username}</p>
+      <div className="border-t border-border px-3 py-4">
+        <p className="mb-3 px-3 text-[11px] text-muted-foreground/60 truncate">{username}</p>
         <button
           type="button"
           onClick={handleLogout}
-          className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-white/40 transition-colors hover:bg-white/[0.05] hover:text-white/70"
+          className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground/70 transition-colors hover:bg-secondary hover:text-foreground"
         >
           <LogOut className="h-4 w-4" />
           Sign out

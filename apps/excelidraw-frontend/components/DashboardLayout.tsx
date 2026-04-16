@@ -52,7 +52,7 @@ export function DashboardLayout({ children }: { children: (username: string, roo
   }
 
   return (
-    <div className="min-h-screen bg-[#12151e]">
+    <div className="min-h-screen bg-background">
       <DashboardSidebar username={user.username} />
       <main className="min-h-screen pl-60">
         <div className="mx-auto max-w-5xl p-8">

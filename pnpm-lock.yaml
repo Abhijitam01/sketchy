@@ -47,6 +47,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      landing-effects:
+        specifier: ^0.1.1
+        version: 0.1.1
       lucide-react:
         specifier: ^0.473.0
         version: 0.473.0(react@19.0.0)
@@ -2621,6 +2624,9 @@ packages:
 
   khroma@2.1.0:
     resolution: {integrity: sha512-Ls993zuzfayK269Svk9hzpeGUKob/sIgZzyHYdjQoAdQetRKpOLj+k/QQQ/6Qi0Yz65mlROrfd+Ev+1+7dz9Kw==}
+
+  landing-effects@0.1.1:
+    resolution: {integrity: sha512-racPwT7CZurXXiznWm/N3uilL7svF2xfP65XJONuc5PTBRiACX0JyxeiEMfaia7wqwE7xaKg6e/V40dHUX++dw==}
 
   langium@3.3.1:
     resolution: {integrity: sha512-QJv/h939gDpvT+9SiLVlY7tZC3xB2qK57v0J04Sh9wpMb6MP1q8gB21L3WIo8T5P1MSMg3Ep14L7KkDCFG3y4w==}
@@ -6362,6 +6368,8 @@ snapshots:
       json-buffer: 3.0.1
 
   khroma@2.1.0: {}
+
+  landing-effects@0.1.1: {}
 
   langium@3.3.1:
     dependencies:

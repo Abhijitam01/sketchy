@@ -142,16 +142,16 @@ export function CreateRoomCard() {
   };
 
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-[#1e1e2e] p-5">
+    <div className="rounded-xl border border-border bg-card p-5 shadow-sm dark:shadow-none">
       {/* Tab switcher */}
-      <div className="mb-4 flex gap-1 rounded-lg bg-white/[0.04] p-1">
+      <div className="mb-4 flex gap-1 rounded-lg bg-secondary/60 dark:bg-white/[0.04] p-1">
         <button
           type="button"
           onClick={() => switchTab("create")}
           className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
             activeTab === "create"
-              ? "bg-indigo-600 text-white"
-              : "text-white/40 hover:text-white/70"
+              ? "bg-indigo-600 text-white shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Create room
@@ -161,8 +161,8 @@ export function CreateRoomCard() {
           onClick={() => switchTab("join")}
           className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
             activeTab === "join"
-              ? "bg-indigo-600 text-white"
-              : "text-white/40 hover:text-white/70"
+              ? "bg-indigo-600 text-white shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Join room
@@ -174,17 +174,17 @@ export function CreateRoomCard() {
         <>
           {ready ? (
             <div className="space-y-4">
-              <p className="text-xs text-white/50">Room created! Share the link or enter now.</p>
+              <p className="text-xs text-muted-foreground">Room created! Share the link or enter now.</p>
               <div className="flex gap-2">
                 <input
                   readOnly
                   value={ready.shareUrl}
-                  className="min-w-0 flex-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs text-white/70 focus:outline-none"
+                  className="min-w-0 flex-1 rounded-lg border border-border bg-secondary/40 dark:bg-white/[0.04] px-3 py-2 text-xs text-foreground/70 focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={onCopyLink}
-                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs text-white/70 transition hover:bg-white/[0.08] hover:text-white"
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-secondary/50 dark:bg-white/[0.04] px-3 py-2 text-xs text-muted-foreground transition hover:bg-secondary hover:text-foreground"
                 >
                   {copied ? <Check className="h-3.5 w-3.5 text-green-400" /> : <Copy className="h-3.5 w-3.5" />}
                   {copied ? "Copied" : "Copy"}
@@ -206,17 +206,17 @@ export function CreateRoomCard() {
                   name="roomName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs text-white/50">Room name</FormLabel>
+                      <FormLabel className="text-xs text-muted-foreground">Room name</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="my-project"
                           disabled={isSubmitting}
-                          className="border-white/[0.08] bg-white/[0.04] text-white placeholder:text-white/20 focus:border-indigo-500/60"
+                          className="border-border bg-input text-foreground placeholder:text-muted-foreground/50 focus:border-primary/60"
                           {...field}
                         />
                       </FormControl>
                       <FormMessage />
-                      {error && <p className="text-xs text-red-400">{error}</p>}
+                      {error && <p className="text-xs text-destructive">{error}</p>}
                     </FormItem>
                   )}
                 />
@@ -226,18 +226,18 @@ export function CreateRoomCard() {
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex items-center justify-between">
-                        <FormLabel className="text-xs text-white/50">Private</FormLabel>
+                        <FormLabel className="text-xs text-muted-foreground">Private</FormLabel>
                         <FormControl>
                           <input
                             type="checkbox"
                             checked={field.value}
                             onChange={(e) => field.onChange(e.target.checked)}
                             disabled={isSubmitting}
-                            className="h-3.5 w-3.5 accent-indigo-500"
+                            className="h-3.5 w-3.5 accent-indigo-600"
                           />
                         </FormControl>
                       </div>
-                      <FormDescription className="text-[11px] text-white/25">
+                      <FormDescription className="text-[11px] text-muted-foreground/55">
                         Requires invite link to join.
                       </FormDescription>
                     </FormItem>
@@ -264,7 +264,7 @@ export function CreateRoomCard() {
       {activeTab === "join" && (
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs text-white/50">Room name or invite link</label>
+            <label className="text-xs text-muted-foreground">Room name or invite link</label>
             <Input
               placeholder="my-project or https://…/room/my-project?invite=…"
               value={joinInput}
@@ -275,9 +275,9 @@ export function CreateRoomCard() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") onJoin();
               }}
-              className="border-white/[0.08] bg-white/[0.04] text-white placeholder:text-white/20 focus:border-indigo-500/60"
+              className="border-border bg-input text-foreground placeholder:text-muted-foreground/50 focus:border-primary/60"
             />
-            {joinError && <p className="text-xs text-red-400">{joinError}</p>}
+            {joinError && <p className="text-xs text-destructive">{joinError}</p>}
           </div>
           <button
             type="button"

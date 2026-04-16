@@ -73,11 +73,11 @@ export default function SignupFormDemo({ mode = "signup" }: { mode?: AuthMode })
   }
 
   return (
-    <div className="w-full rounded-xl border border-white/[0.08] bg-[#1e1e2e] p-6">
-      <h2 className="text-lg font-semibold text-white">
+    <div className="w-full rounded-xl border border-border bg-card p-6 shadow-sm dark:shadow-none">
+      <h2 className="text-lg font-semibold text-foreground">
         {isSignup ? "Create your account" : "Welcome back"}
       </h2>
-      <p className="mt-1.5 text-sm text-white/50">
+      <p className="mt-1.5 text-sm text-muted-foreground">
         {isSignup
           ? "Sign up to start collaborative whiteboarding."
           : "Sign in to continue to your rooms."}
@@ -175,26 +175,26 @@ export default function SignupFormDemo({ mode = "signup" }: { mode?: AuthMode })
         </button>
 
         <div className="relative flex items-center gap-3">
-          <div className="h-px flex-1 bg-white/[0.06]" />
-          <span className="text-xs text-white/30">or</span>
-          <div className="h-px flex-1 bg-white/[0.06]" />
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-xs text-muted-foreground/60">or</span>
+          <div className="h-px flex-1 bg-border" />
         </div>
 
         <button
           type="button"
           onClick={handleDemoLogin}
           disabled={demoLoading || loading}
-          className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] py-2.5 text-sm text-white/60 transition hover:bg-white/[0.08] hover:text-white/80 disabled:opacity-60"
+          className="w-full rounded-lg border border-border bg-secondary/50 py-2.5 text-sm text-muted-foreground transition hover:bg-secondary hover:text-foreground disabled:opacity-60"
         >
           {demoLoading ? "Loading demo…" : "Continue with demo account"}
         </button>
       </form>
 
-      <p className="mt-5 text-center text-sm text-white/40">
+      <p className="mt-5 text-center text-sm text-muted-foreground/80">
         {isSignup ? "Already have an account? " : "Don't have an account? "}
         <Link
           href={isSignup ? "/signin" : "/signup"}
-          className="text-indigo-400 transition hover:text-indigo-300"
+          className="text-indigo-600 dark:text-indigo-400 transition hover:text-indigo-500 dark:hover:text-indigo-300"
         >
           {isSignup ? "Sign in" : "Sign up"}
         </Link>
@@ -204,7 +204,7 @@ export default function SignupFormDemo({ mode = "signup" }: { mode?: AuthMode })
 }
 
 const inputClass =
-  "w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-indigo-500/60 focus:bg-white/[0.06]"
+  "w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-primary/60 focus:ring-0"
 
 function Field({
   label,
@@ -217,7 +217,7 @@ function Field({
 }) {
   return (
     <div className="flex w-full flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-medium text-white/50">
+      <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
         {label}
       </label>
       {children}
