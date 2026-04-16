@@ -16,7 +16,7 @@ export const PresenceBar = ({ users }: PresenceBarProps) => {
   const extra = users.length - visible.length
 
   return (
-    <div className="fixed top-5 right-5 z-50 flex items-center gap-3 bg-[#232329] px-3 py-2 rounded-md text-white">
+    <div className="flex items-center gap-3 bg-[#232329] px-3 py-2 rounded-md text-white">
       <div className="text-xs text-white/70">Active</div>
       <div className="flex -space-x-2">
         {visible.map((user) => (

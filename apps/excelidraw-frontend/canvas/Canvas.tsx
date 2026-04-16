@@ -8,7 +8,8 @@ import { ShareButton } from "@/components/ShareButton"
 import { Game, PresenceUser, SelectedShapeInfo, TextInputRequest } from "@/render/Game"
 import type { RoomData } from "@/types/room"
 import { useEffect, useRef, useState, ChangeEvent, type ReactNode } from "react"
-import { Download, FolderOpen, Menu, RotateCcw, Save, X } from "lucide-react"
+import { Download, FolderOpen, Menu, Moon, RotateCcw, Save, Sun, X } from "lucide-react"
+import { useTheme } from "next-themes"
 
 interface CanvasProps {
   roomId: string
@@ -54,6 +55,7 @@ const TEXT_INPUT_FONT_FAMILY = "\"Caveat\", \"Comic Sans MS\", \"Segoe Print\", 
 
 export const Canvas = ({ roomId, socket, room, inviteCode }: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { theme, setTheme } = useTheme()
   const previousToolRef = useRef<Tool | null>(null)
   const toolLockedRef = useRef<boolean>(false)
   const [game, setGame] = useState<Game>()
@@ -388,8 +390,19 @@ export const Canvas = ({ roomId, socket, room, inviteCode }: CanvasProps) => {
           setMermaidUpdateError(null)
         }}
       />
-      <ShareButton inviteCode={inviteCode} />
-      <PresenceBar users={presenceUsers} />
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <ShareButton inviteCode={inviteCode} />
+        <PresenceBar users={presenceUsers} />
+        <button
+          type="button"
+          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-[#1f2026]/95 text-white/80 shadow-lg backdrop-blur transition hover:bg-[#2a2d37] hover:text-white"
+          aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+          title={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+        >
+          {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+        </button>
+      </div>
       {!isSelectMenuOpen && !isMermaidPanelOpen ? (
         <Sidebar
           activeTool={activeTool}

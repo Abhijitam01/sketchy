@@ -25,7 +25,7 @@ export const ShareButton = ({ inviteCode }: ShareButtonProps) => {
   return (
     <button
       onClick={onShare}
-      className="fixed right-44 top-5 z-50 flex items-center gap-2 rounded-md bg-[#232329] px-3 py-2 text-sm text-white/90 hover:text-white"
+      className="flex items-center gap-2 rounded-md bg-[#232329] px-3 py-2 text-sm text-white/90 hover:text-white"
       title="Copy room link"
       type="button"
     >
