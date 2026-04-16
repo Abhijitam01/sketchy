@@ -6,7 +6,6 @@ const demoEnabled = process.env.NEXT_PUBLIC_ENABLE_LIVE_DEMO !== "false"
 export default function Page() {
   return (
     <main className="min-h-screen bg-[#12151e] text-white">
-      {/* Nav */}
       <header className="flex items-center justify-between px-8 py-5">
         <span className="text-base font-semibold tracking-tight">Sketchy</span>
         <div className="flex items-center gap-2">
@@ -25,7 +24,6 @@ export default function Page() {
         </div>
       </header>
 
-      {/* Hero */}
       <section className="mx-auto flex max-w-4xl flex-col items-center px-6 pb-24 pt-20 text-center">
         <h1 className="text-5xl font-semibold tracking-tight sm:text-6xl">
           Draw together,
@@ -61,9 +59,7 @@ export default function Page() {
           )}
         </div>
 
-        {/* Canvas mockup */}
         <div className="mt-16 w-full max-w-2xl overflow-hidden rounded-2xl border border-white/[0.08] bg-[#1e1e2e] shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
-          {/* Toolbar mockup */}
           <div className="flex items-center justify-center border-b border-white/[0.06] px-4 py-3">
             <div className="flex items-center gap-1 rounded-xl border border-white/[0.08] bg-[#12151e] px-2 py-1.5">
               {["V", "H", "R", "O", "A", "L", "P", "T", "E"].map((key) => (
@@ -76,7 +72,6 @@ export default function Page() {
               ))}
             </div>
           </div>
-          {/* Canvas area */}
           <div className="relative h-72">
             <svg
               width="100%"
@@ -86,7 +81,6 @@ export default function Page() {
               xmlns="http://www.w3.org/2000/svg"
               className="absolute inset-0"
             >
-              {/* Rectangle */}
               <rect
                 x="60"
                 y="60"
@@ -97,7 +91,6 @@ export default function Page() {
                 strokeWidth="1.5"
                 fill="rgba(30,70,101,0.3)"
               />
-              {/* Ellipse */}
               <ellipse
                 cx="380"
                 cy="110"
@@ -107,7 +100,6 @@ export default function Page() {
                 strokeWidth="1.5"
                 fill="rgba(89,49,49,0.3)"
               />
-              {/* Arrow */}
               <line
                 x1="230"
                 y1="110"
@@ -122,14 +114,12 @@ export default function Page() {
                 strokeWidth="1.5"
                 fill="none"
               />
-              {/* Diamond */}
               <path
                 d="M490 180 L530 210 L490 240 L450 210 Z"
                 stroke="rgba(77,161,83,0.6)"
                 strokeWidth="1.5"
                 fill="rgba(23,61,16,0.3)"
               />
-              {/* Pencil lines */}
               <path
                 d="M80 200 C100 190, 120 210, 140 195 S170 185, 190 200"
                 stroke="rgba(183,98,42,0.5)"
@@ -137,7 +127,6 @@ export default function Page() {
                 fill="none"
                 strokeLinecap="round"
               />
-              {/* Text hint */}
               <text x="60" y="240" fill="rgba(255,255,255,0.25)" fontSize="11" fontFamily="system-ui">
                 Your ideas here
               </text>
@@ -146,7 +135,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-white/[0.06] px-8 py-5 text-center text-xs text-white/30">
         © {new Date().getFullYear()} Sketchy — multiplayer drawing for teams
       </footer>

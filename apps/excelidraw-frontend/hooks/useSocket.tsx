@@ -10,10 +10,7 @@ export const useSocket = (roomId: string | null, inviteCode?: string | null) => 
     if (!roomId) return;
 
     const token = safeStorageGet("token");
-    if (!token) {
-      console.error("Token is missing from localStorage");
-      return;
-    }
+    if (!token) return;
 
     const ws = new WebSocket(`${getPublicWsUrl()}/?token=${token}`);
 
@@ -28,8 +25,8 @@ export const useSocket = (roomId: string | null, inviteCode?: string | null) => 
       ws.send(data);
     };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
+    ws.onerror = () => {
+      setSocket(null);
     };
 
     return () => {

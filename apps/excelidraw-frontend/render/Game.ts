@@ -283,6 +283,19 @@ export class Game {
             else if (data.type === "presence" && Array.isArray(data.users)) {
                 this.onPresenceUpdateCallback?.(data.users)
             }
+            else if (data.type === "update") {
+                const payload = JSON.parse(data.data)
+                if (
+                    payload &&
+                    typeof payload.index === "number" &&
+                    payload.shape &&
+                    payload.index >= 0 &&
+                    payload.index < this.existingShape.length
+                ) {
+                    this.existingShape[payload.index] = payload.shape
+                    this.clearCanvas()
+                }
+            }
 
         }
     }

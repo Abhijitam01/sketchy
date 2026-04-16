@@ -140,9 +140,6 @@ wss.on("connection", async function connection(ws, request){
 
     logger.info("WebSocket connection established", { connectionId, userId, username })
 
-
-
-
     ws.on("error", (error) => {
         logger.error("WebSocket connection error", { connectionId, userId, error })
     })
@@ -157,8 +154,6 @@ wss.on("connection", async function connection(ws, request){
         logger.info("WebSocket connection closed", { connectionId, userId, roomCount: rooms.length })
         rooms.forEach(broadcastPresence)
     })
-
-
 
     ws.on('message', async function message(data){
         const text = toText(data)
@@ -340,7 +335,6 @@ wss.on("connection", async function connection(ws, request){
                 }
             })
 
-
             users.forEach(user => {
                 if(user.rooms.includes(roomId) && user.ws !== ws){
                     user.ws.send(JSON.stringify({
@@ -384,6 +378,50 @@ wss.on("connection", async function connection(ws, request){
                         type: "erase",
                         data: payload,
                         roomId
+                    }))
+                }
+            })
+            return;
+        }
+
+        if (parsedData.type === "update") {
+            const sender = getUser(ws)
+            const roomId = String(parsedData.roomId ?? "")
+            const roomIdNum = Number(roomId)
+            const payload = safeJsonParse(parsedData.data)
+            if (
+                !sender ||
+                !roomId ||
+                !Number.isFinite(roomIdNum) ||
+                !payload ||
+                typeof payload.index !== "number" ||
+                !payload.shape ||
+                !sender.rooms.includes(roomId)
+            ) {
+                return;
+            }
+            try {
+                const shapes = await prismaClient.shape.findMany({
+                    where: { roomId: roomIdNum },
+                    orderBy: { id: "asc" },
+                    select: { id: true }
+                })
+                const record = shapes[payload.index]
+                if (record) {
+                    await prismaClient.shape.update({
+                        where: { id: record.id },
+                        data: { data: JSON.stringify({ shape: payload.shape }) }
+                    })
+                }
+            } catch (e) {
+                logger.warn("Shape update DB write failed", { roomId, index: payload.index, error: e })
+            }
+            users.forEach(user => {
+                if (user.rooms.includes(roomId) && user.ws !== ws) {
+                    user.ws.send(JSON.stringify({
+                        type: "update",
+                        roomId,
+                        data: parsedData.data
                     }))
                 }
             })

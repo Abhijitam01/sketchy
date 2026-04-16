@@ -5,6 +5,7 @@ import { Canvas } from "./Canvas"
 import { useSocket } from "@/hooks/useSocket"
 import type { RoomData } from "@/types/room"
 import { safeStorageSet } from "@/lib/storage"
+import { RoomCanvasSkeleton } from "@/components/loading-skeletons"
 
 export const RoomCanvas = ({
     roomId,
@@ -24,7 +25,7 @@ export const RoomCanvas = ({
     const socket = useSocket(roomId, inviteCode)
 
     if (!socket) {
-        return <div>Connecting to WebSocket...</div>
+        return <RoomCanvasSkeleton />
     }
 
     return <Canvas roomId={roomId} socket={socket} room={room} inviteCode={inviteCode} />

@@ -90,7 +90,6 @@ export const Sidebar = ({
 
   return (
     <aside className="fixed left-4 top-20 z-40 w-[220px] rounded-xl border border-white/10 bg-[#1e1e2e] p-3 text-white shadow-2xl">
-      {/* Header */}
       <div className="mb-3 flex items-center justify-between">
         <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">Properties</p>
         <span className="rounded-md bg-white/[0.07] px-2 py-0.5 text-[10px] font-medium text-white/50">
@@ -99,7 +98,6 @@ export const Sidebar = ({
       </div>
 
       <div className="space-y-4">
-        {/* Stroke Color */}
         <Section label="Stroke">
           <div className="grid grid-cols-5 gap-1.5">
             {STROKE_FILLS.map((fill) => (
@@ -114,7 +112,6 @@ export const Sidebar = ({
           </div>
         </Section>
 
-        {/* Background */}
         {showBgFill && (
           <Section label="Background">
             <div className="grid grid-cols-5 gap-1.5">
@@ -132,7 +129,6 @@ export const Sidebar = ({
           </Section>
         )}
 
-        {/* Stroke Width */}
         <Section label="Stroke Width">
           <div className="flex gap-1.5">
             {STROKE_WIDTHS.map((w) => (
@@ -156,7 +152,6 @@ export const Sidebar = ({
           </div>
         </Section>
 
-        {/* Stroke Style */}
         {showStrokeStyle && (
           <Section label="Stroke Style">
             <div className="flex gap-1.5">
@@ -179,7 +174,6 @@ export const Sidebar = ({
           </Section>
         )}
 
-        {/* Opacity */}
         <Section label={`Opacity ${Math.round(opacity * 100)}%`}>
           <input
             type="range"
@@ -192,7 +186,6 @@ export const Sidebar = ({
           />
         </Section>
 
-        {/* Font Size */}
         {showFontSize && (
           <Section label={`Font Size ${fontSize}px`}>
             <input
