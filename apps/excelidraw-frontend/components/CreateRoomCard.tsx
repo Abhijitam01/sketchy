@@ -16,13 +16,43 @@ import {
   FormMessage,
 } from "@repo/ui/form";
 import { Input } from "@repo/ui/input";
-import { Loader2, Plus } from "lucide-react";
+import { Check, Copy, Loader2, LogIn, Plus } from "lucide-react";
 import { getPublicHttpUrl } from "@/lib/public-urls";
 import { safeStorageGet } from "@/lib/storage";
 
+type ActiveTab = "create" | "join";
+
+interface ReadyState {
+  roomName: string;
+  shareUrl: string;
+}
+
+function parseRoomInput(raw: string): string {
+  const trimmed = raw.trim();
+  try {
+    const url = new URL(trimmed, window.location.origin);
+    const match = url.pathname.match(/\/room\/([^/]+)/);
+    if (match?.[1]) {
+      const invite = url.searchParams.get("invite");
+      return invite ? `/room/${match[1]}?invite=${invite}` : `/room/${match[1]}`;
+    }
+  } catch {
+    // not a URL — treat as plain slug
+  }
+  return `/room/${trimmed}`;
+}
+
 export function CreateRoomCard() {
+  const [activeTab, setActiveTab] = useState<ActiveTab>("create");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [ready, setReady] = useState<ReadyState | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  // Join tab state
+  const [joinInput, setJoinInput] = useState("");
+  const [joinError, setJoinError] = useState("");
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof CreateRoomSchema>>({
@@ -63,8 +93,11 @@ export function CreateRoomCard() {
       if (responseData?.error) {
         setError(responseData.error);
       } else {
-        const inviteQuery = responseData?.room?.inviteCode ? `?invite=${responseData.room.inviteCode}` : "";
-        router.push(`/room/${values.roomName}${inviteQuery}`);
+        const inviteQuery = responseData?.room?.inviteCode
+          ? `?invite=${responseData.room.inviteCode}`
+          : "";
+        const shareUrl = `${window.location.origin}/room/${values.roomName}${inviteQuery}`;
+        setReady({ roomName: values.roomName, shareUrl });
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Unexpected error occurred");
@@ -73,66 +106,188 @@ export function CreateRoomCard() {
     }
   };
 
+  const onCopyLink = async () => {
+    if (!ready) return;
+    try {
+      await navigator.clipboard.writeText(ready.shareUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // clipboard unavailable
+    }
+  };
+
+  const onEnterRoom = () => {
+    if (!ready) return;
+    const path = ready.shareUrl.replace(window.location.origin, "");
+    router.push(path);
+  };
+
+  const onJoin = () => {
+    const trimmed = joinInput.trim();
+    if (!trimmed) {
+      setJoinError("Enter a room name or invite link.");
+      return;
+    }
+    setJoinError("");
+    router.push(parseRoomInput(trimmed));
+  };
+
+  const switchTab = (tab: ActiveTab) => {
+    setActiveTab(tab);
+    setError("");
+    setJoinError("");
+    setReady(null);
+    setCopied(false);
+  };
+
   return (
     <div className="rounded-xl border border-white/[0.08] bg-[#1e1e2e] p-5">
-      <p className="mb-4 text-sm font-medium text-white/70">New room</p>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="roomName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs text-white/50">Room name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="my-project"
-                    disabled={isSubmitting}
-                    className="border-white/[0.08] bg-white/[0.04] text-white placeholder:text-white/20 focus:border-indigo-500/60"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-                {error && <p className="text-xs text-red-400">{error}</p>}
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="isPrivate"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel className="text-xs text-white/50">Private</FormLabel>
-                  <FormControl>
-                    <input
-                      type="checkbox"
-                      checked={field.value}
-                      onChange={(e) => field.onChange(e.target.checked)}
-                      disabled={isSubmitting}
-                      className="h-3.5 w-3.5 accent-indigo-500"
-                    />
-                  </FormControl>
-                </div>
-                <FormDescription className="text-[11px] text-white/25">
-                  Requires invite link to join.
-                </FormDescription>
-              </FormItem>
-            )}
-          />
+      {/* Tab switcher */}
+      <div className="mb-4 flex gap-1 rounded-lg bg-white/[0.04] p-1">
+        <button
+          type="button"
+          onClick={() => switchTab("create")}
+          className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
+            activeTab === "create"
+              ? "bg-indigo-600 text-white"
+              : "text-white/40 hover:text-white/70"
+          }`}
+        >
+          Create room
+        </button>
+        <button
+          type="button"
+          onClick={() => switchTab("join")}
+          className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
+            activeTab === "join"
+              ? "bg-indigo-600 text-white"
+              : "text-white/40 hover:text-white/70"
+          }`}
+        >
+          Join room
+        </button>
+      </div>
+
+      {/* Create tab */}
+      {activeTab === "create" && (
+        <>
+          {ready ? (
+            <div className="space-y-4">
+              <p className="text-xs text-white/50">Room created! Share the link or enter now.</p>
+              <div className="flex gap-2">
+                <input
+                  readOnly
+                  value={ready.shareUrl}
+                  className="min-w-0 flex-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs text-white/70 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={onCopyLink}
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs text-white/70 transition hover:bg-white/[0.08] hover:text-white"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5 text-green-400" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copied ? "Copied" : "Copy"}
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={onEnterRoom}
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-500"
+              >
+                Enter room →
+              </button>
+            </div>
+          ) : (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="roomName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs text-white/50">Room name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="my-project"
+                          disabled={isSubmitting}
+                          className="border-white/[0.08] bg-white/[0.04] text-white placeholder:text-white/20 focus:border-indigo-500/60"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                      {error && <p className="text-xs text-red-400">{error}</p>}
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isPrivate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center justify-between">
+                        <FormLabel className="text-xs text-white/50">Private</FormLabel>
+                        <FormControl>
+                          <input
+                            type="checkbox"
+                            checked={field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                            disabled={isSubmitting}
+                            className="h-3.5 w-3.5 accent-indigo-500"
+                          />
+                        </FormControl>
+                      </div>
+                      <FormDescription className="text-[11px] text-white/25">
+                        Requires invite link to join.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:opacity-60"
+                >
+                  {isSubmitting ? (
+                    <><Loader2 className="h-4 w-4 animate-spin" /> Creating…</>
+                  ) : (
+                    <><Plus className="h-4 w-4" /> Create room</>
+                  )}
+                </button>
+              </form>
+            </Form>
+          )}
+        </>
+      )}
+
+      {/* Join tab */}
+      {activeTab === "join" && (
+        <div className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs text-white/50">Room name or invite link</label>
+            <Input
+              placeholder="my-project or https://…/room/my-project?invite=…"
+              value={joinInput}
+              onChange={(e) => {
+                setJoinInput(e.target.value);
+                if (joinError) setJoinError("");
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") onJoin();
+              }}
+              className="border-white/[0.08] bg-white/[0.04] text-white placeholder:text-white/20 focus:border-indigo-500/60"
+            />
+            {joinError && <p className="text-xs text-red-400">{joinError}</p>}
+          </div>
           <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:opacity-60"
+            type="button"
+            onClick={onJoin}
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-500"
           >
-            {isSubmitting ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Creating…</>
-            ) : (
-              <><Plus className="h-4 w-4" /> Create & join</>
-            )}
+            <LogIn className="h-4 w-4" /> Join room →
           </button>
-        </form>
-      </Form>
+        </div>
+      )}
     </div>
   );
 }
