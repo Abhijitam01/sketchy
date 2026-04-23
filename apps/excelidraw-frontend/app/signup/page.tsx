@@ -9,7 +9,7 @@ const SignUpPage = () => {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <Link href="/" className="text-lg font-semibold text-foreground">
-            Sketchy
+            Sketchable
           </Link>
         </div>
         <SignupFormDemo mode="signup" />
