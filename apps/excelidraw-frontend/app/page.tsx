@@ -26,7 +26,7 @@ function Logo({ size = 22 }: { size?: number }) {
             calcMode="spline" keySplines="0.4 0 0.2 1" />
         </path>
       </svg>
-      <span className="text-[15px] font-semibold tracking-tight text-foreground">Sketchy</span>
+      <span className="text-[15px] font-semibold tracking-tight text-foreground">Sketchable</span>
     </div>
   )
 }
@@ -110,7 +110,7 @@ export default function Page() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            Sketchy is a minimal multiplayer whiteboard. Open a room, share a link,
+            Sketchable is a minimal multiplayer whiteboard. Open a room, share a link,
             and your whole team is drawing together&nbsp;— instantly.
           </p>
 
@@ -157,7 +157,7 @@ export default function Page() {
               <div className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
               <div className="ml-auto flex items-center gap-2 rounded-md border border-white/[0.07] bg-[#0d0e14] px-3 py-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-indigo-400/60" />
-                <span className="font-mono text-[10px] text-white/25">sketchy.app/room/team-flow</span>
+                <span className="font-mono text-[10px] text-white/25">sketchable.app/room/team-flow</span>
               </div>
             </div>
             <DrawingCanvas />
@@ -313,7 +313,7 @@ export default function Page() {
               <path d="M4 18 C4 18 8 10 11 8 C14 6 18 10 18 14" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" fill="none" />
               <path d="M7 15 C7 15 9 12 11 11 C13 10 15 12 15 14" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round" fill="none" />
             </svg>
-            © {new Date().getFullYear()} Sketchy — multiplayer drawing for teams
+            © {new Date().getFullYear()} Sketchable — multiplayer drawing for teams
           </div>
           <div className="flex items-center gap-5 text-xs text-muted-foreground/50">
             <Link href="/signin" className="transition hover:text-muted-foreground">Sign in</Link>
