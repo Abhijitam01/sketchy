@@ -1,4 +1,4 @@
-# Sketchy
+# Sketchable
 
 Realtime multiplayer whiteboard built with Next.js, Express, WebSockets, and Prisma in a Turborepo monorepo.
 
@@ -11,7 +11,7 @@ Realtime multiplayer whiteboard built with Next.js, Express, WebSockets, and Pri
 ## Product Preview
 ### Screenshot
 <!-- Replace this path with your final screenshot file -->
-![Sketchy Screenshot](./docs/assets/screenshot-main.png)
+![Sketchable Screenshot](./docs/assets/screenshot-main.png)
 
 ### Demo Video
 <!-- Option 1: YouTube/Vimeo link -->
