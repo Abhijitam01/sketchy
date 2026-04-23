@@ -28,7 +28,7 @@ export function DashboardSidebar({ username }: DashboardSidebarProps) {
     <div className="fixed left-0 top-0 z-20 flex h-screen w-60 flex-col border-r border-border bg-card">
       <div className="px-5 py-5">
         <Link href="/" className="text-base font-semibold text-foreground">
-          Sketchy
+          Sketchable
         </Link>
       </div>
 
